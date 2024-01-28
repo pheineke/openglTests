@@ -47,6 +47,7 @@ def Cube(edges, vertices):
     for edge in edges:
         for vertex in edge:
             glVertex3fv(vertices[vertex])
+            
     glEnd()
 
 
@@ -99,12 +100,13 @@ def main():
     fpsClock=pygame.time.Clock()
 
     display = (1920, 1080)
-    pygame.display.set_mode(display,pygame.DOUBLEBUF | pygame.OPENGL)
+    pygame.display.set_mode(display,pygame.DOUBLEBUF | pygame.OPENGL | pygame.NOFRAME)
     pygame.display.set_caption("main")
-    gluPerspective(45, (display[0]/display[1]), 10, 10000.0)
+    gluPerspective(45, (display[0]/display[1]), 2, 10000.0)
     glTranslatef(0,0, -20)
 
-    
+    run = 0
+    rg, bz, ra = 1,1,1
 
     running = True
     while running:
@@ -140,19 +142,29 @@ def main():
                 glTranslatef(0,0,1.0)
             if event.button == 5:
                 glTranslatef(0,0,-1.0)
-            
-            
-        glRotatef(0, 0, 0, 0)
+        
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        #Cube(edges,vertices)
+
+        glRotatef(1, 3, 1, 1)
         Cube(edges,vertices)
-        Morpher()
+
+        
+        glColor3f(rg, bz, ra)
+
+        rg += (random.random() * random.randint(1,2)) % 100
+        bz += (random.random() * random.randint(1,2)) % 100
+        ra += (random.random() * random.randint(1,2)) % 100
+        if run < 1000:
+            print(run)
+            
+            
+            #Cube(edges,vertices)
+            
+            Morpher()
+        
+            run +=1
         pygame.display.flip()
         fpsClock.tick(FPS)
-
-        
-        
-
 
 
 

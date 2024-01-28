@@ -16,7 +16,7 @@ timeinterval = 1
 #### OPENGL
 
 vertices = [
-    (0, 0, 0),
+    [(0, 0, 0),(0,0)]
 ]
 
 
@@ -41,18 +41,48 @@ f = 0
 n = 0
 r = 1
 
-def Cube(edges, vertices):
+
+def Painter(edges, vertices):
     glBegin(GL_LINES)
 
     for edge in edges:
         for vertex in edge:
-            glVertex3fv(vertices[vertex])
+            glVertex3fv(vertices[vertex][0])
     glEnd()
+
+
+def Morpher():
+    global a,b,c,d,e,f,n,r
+    for vertex in vertices:
+        x,y,z = vertex[0]
+        a,b = vertex[1]
+
+        if (x,y) != (0,0):
+            for vertex1 in vertices:
+                xv1, yv1, zv1 = vertex1[0]
+                if distanceCalc((xv1,yv1,0), vertex1[0]) >= 1:
+                    newPoint(xv1, yv1, 0)
+            vertices.remove(vertex)
+
+            x += a
+            y += b
+
+            vtex = [(x,y,0),(a,b)]
+            vertices.append(vtex)
+
+def distanceCalc(p1, p2):
+    return math.sqrt((p1[0] - p2[0])**2 + (p2[1] - p1[1])**2 + (p2[2] - p1[2])**2)
+
 
 def rootPoint(x=0,y=0,z=0):
     vertices.append((x,y,z))
 
 def newPoint(x,y,z):
+    a = random.randint(-1,1)*random.random()
+    b = random.randint(-1,1)*random.random()
+    x += random.random()
+    y += random.random()
+    vertices.append([(x,y,0), (a,b)])
     
 
 def main():
@@ -67,7 +97,7 @@ def main():
     gluPerspective(45, (display[0]/display[1]), 10, 10000.0)
     glTranslatef(0,0, -20)
 
-    
+    newPoint(0.001,0.001,0)
 
     running = True
     while running:
@@ -107,8 +137,8 @@ def main():
             
         glRotatef(0, 0, 0, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        #Cube(edges,vertices)
-        Cube(edges,vertices)
+
+        Painter(edges,vertices)
         Morpher()
         pygame.display.flip()
         fpsClock.tick(FPS)
